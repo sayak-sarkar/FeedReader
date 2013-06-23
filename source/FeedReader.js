@@ -11,6 +11,15 @@ enyo.kind({
 				{name: "feedUrl", kind: "Input", flex: 1, value: "http://feeds.bbci.co.uk/news/rss.xml"},
 				{kind: "Button",caption: "Get Feed", onclick: "btnClick"}
 			]}
+		]},
+		{kind: "Scroller", flex: 1, components: [
+			{name: "list", kind: "VirtualRepeater", onSetupRow: "getListItem",
+				components: [
+					{kind: "Item", layoutKind: "VFlexLayout", components: [
+						{name: "title", kind: "Divider"},
+						{name: "description"}
+					]}
+				]}
 		]}
 	],
 	btnClick: function() {
@@ -19,10 +28,23 @@ enyo.kind({
 		this.$.getFeed.setUrl(url);
 		this.$.getFeed.call();
 	},
+	create: function () {
+		this.inherited(arguments);
+		this.results = [];
+	},
+	getListItem: function (inSender, inIndex) {
+		var r = this.results[inIndex];
+		if (r) {
+			this.$.title.setCaption(r.title);
+			this.$.description.setContent(r.description);
+			return true;
+		}
+	},
 	gotFeed: function (inSender, inResponse) {
-		this.$.button.setCaption("Success");
+		this.results = inResponse.query.results.item;
+		this.$.list.render();
 	},
 	gotFeedFailure: function (inSender, inResponse) {
-		this.$.button.setCaption("Failure");
+		enyo.log("Got Failure from getFeed");
 	}
 });
