@@ -1,4 +1,4 @@
 enyo.depends(
-	"source/FeedReader.js"
+	"source/FeedReader.js",
 	"css/FeedReader.css"
 );
