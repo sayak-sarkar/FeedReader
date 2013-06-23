@@ -1,0 +1,10 @@
+{
+	"icon": "icon.png",
+	"id": "in.sayak.labs.feedreader",
+	"main": "index.html",
+	"title": "Enyo FeedReader",
+	"type": "web",
+	"version": "1.0.0.0",
+	"vendor": "Sayak Sarkar",
+	"uiRevision": "2"
+}
