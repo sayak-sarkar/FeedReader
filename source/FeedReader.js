@@ -2,42 +2,53 @@ enyo.kind({
 	name: "MyApps.FeedReader",
 	kind: enyo.VFlexBox,
 	components: [
-		{kind: "PageHeader", components: [
-			{kind: enyo.VFlexBox, content: "Enyo FeedReader", flex: 1},
-			{name: "backButton", kind: "Button", content: "Back", onclick: "goBack"}
-		]},
-		{name: "pane", kind: "Pane", flex: 1, onSelectView: "viewSelected",
+		{name: "pane", kind: "Pane", flex: 1,
 			components: [
-				{name: "search", classname: "enyo-bg", kind: "MyApps.Search", onSelect: "feedSelected", onLinkClick: "linkClicked"},
-				{name: "detail", classname: "enyo-bg", kind: "Scroller", 
-					components: [
-						{name: "webView", kind: "WebView", classname: "enyo-view"}
-					]
+				{name: "search", className: "enyo-bg", kind: "MyApps.Search",
+            		onSelect: "feedSelected", onLinkClick: "linkClicked"},
+         		{name: "detail", className: "enyo-bg", kind: "MyApps.Detail",
+            		onBack: "goBack"},
+				{
+					name: "preferences",
+					className: "enyo-bg",
+					kind: "MyApps.Preferences",
+					onReceive: "preferencesReceived",
+					onSave: "preferencesSaved",
+					onCancel: "goBack"
 				}
 			]
-		}
+		},
+		{kind: "AppMenu",
+      		components: [
+    	    	{caption: "Preferences", onclick: "showPreferences"},
+    		]
+  		}
 	],
-	create: function () {
-		this.inherited(arguments);
-		this.$.pane.selectViewByName("search");
+	openAppMenuHandler: function() {
+    	this.$.appMenu.open();
 	},
-	feedSelected:function (inSender, inFeed) {
+	closeAppMenuHandler: function() {
+		this.$.appMenu.close();
+	},
+	feedSelected: function(inSender, inFeed) {
 		this.$.pane.selectViewByName("detail");
-		this.$.webView.setUrl(inFeed.link);
+		this.$.detail.setUrl(inFeed.link);
 	},
-	linkClicked: function (inSender, inUrl) {
-		this.$.webView.setUrl(inUrl);
+	linkClicked: function(inSender, inUrl) {
+		this.$.detail.setUrl(inUrl);
 		this.$.pane.selectViewByName("detail");
 	},
-	viewSelected: function (inSender, inView) {
-		if (inView == this.$.search) {
-			this.$.webView.setUrl("");
-			this.$.backButton.hide();
-		} else if (inView == this.$.detail) {
-			this.$.backButton.show();
-		}
+	showPreferences: function() {
+		this.$.pane.selectViewByName("preferences");
 	},
-	goBack: function (inSender, inEvent) {
+	preferencesReceived: function(inSender, inDefaultUrl) {
+		this.$.search.setFeedUrl(inDefaultUrl);
+	},
+	preferencesSaved: function(inSender, inFeedUrl) {
+		this.$.search.setFeedUrl(inFeedUrl);
+		this.$.pane.back();
+	},
+	goBack: function(inSender, inEvent) {
 		this.$.pane.back(inEvent);
 	}
 });

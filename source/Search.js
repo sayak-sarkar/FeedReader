@@ -6,6 +6,7 @@ enyo.kind({
 		onSelect: ""
 	},
 components: [
+		{kind: "PageHeader", content: "Enyo FeedReader"},
 		{name: "getFeed", kind: "WebService",
 			onSuccess: "gotFeed",
 			onFailure: "gotFeedFailure"},
@@ -57,5 +58,10 @@ components: [
 	ListItemClick: function (inSender, inEvent) {
 		var feed = this.results[inEvent.rowIndex];
 		this.doSelect(feed);
+	},
+	setFeedUrl: function (inUrl) {
+		if (inUrl) {
+			this.$.feedUrl.setValue(inUrl);
+		}
 	}
 });
